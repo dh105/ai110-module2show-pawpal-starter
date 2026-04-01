@@ -55,10 +55,57 @@ The scheduler now includes:
 ## Testing PawPal+
 To run tests, type the following command in the terminal:
 
-``` python -m pytest
+```bash
+python -m pytest
+```
+
+Suggested checks:
 - Verify tasks are returned in chronological order.
 - Confirm that marking a daily task complete creates a new task for the following day.
-- Verify that the Scheduler flags duplicate times.
+- Verify that the scheduler returns warnings for overlapping times.
 
 
-COnfidence level = 5
+Confidence level = 5
+
+## Features
+
+PawPal+ includes practical planning features designed for daily pet care:
+
+- Smart daily planning within a chosen time window.
+- Clear schedule output with task start/end times.
+- Built-in conflict warnings for overlapping tasks.
+- Task views that can be sorted and filtered for quick review.
+- Recurring care support for daily and weekly routines.
+- Human-readable plan explanations so users understand scheduling decisions.
+
+## How It Works
+
+The current implementation uses the following algorithms and scheduling behaviors:
+
+1. Greedy time-window scheduling
+- Pending tasks are assigned from the chosen start time forward until the window is full.
+- Tasks that do not fit in the remaining time are skipped.
+
+2. Deterministic pre-scheduling sort
+- Tasks are sorted before assignment to keep outputs consistent and repeatable.
+- The scheduler uses completion state, duration, and description as ordering keys.
+
+3. Chronological ordering for display
+- Scheduled tasks are presented in start-time order to make the plan easy to follow.
+
+4. Overlap-based conflict detection
+- Scheduled intervals are compared for overlap.
+- When conflicts exist, warning messages are generated instead of failing the run.
+
+5. Filtered retrieval across owners and pets
+- Tasks can be filtered by status (`all`, `pending`, `completed`).
+- Optional pet-name filtering supports focused, pet-specific views.
+
+6. Recurrence automation on completion
+- Completing a task with `daily` or `weekly` frequency creates the next occurrence automatically.
+
+7. Explainable output generation
+- The scheduler builds a readable summary of scheduled tasks.
+- Conflict warnings are included in the same explanation output when present.
+## 📸 Demo
+ <a href="/course_images/ai110/pawpal.png" target="_blank"><img src='/course_images/ai110/pawpal.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>.

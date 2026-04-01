@@ -40,7 +40,6 @@ The scheduler favors a simple greedy approach that schedules tasks in order of p
 
 This is a tradeoff because it may not always produce the optimal schedule, but it is much simpler to implement and understand. 
 
-Given the constraints of the project and the need for explainability, this tradeoff is reasonable for this scenario.
 ---
 
 ## 3. AI Collaboration
@@ -50,12 +49,17 @@ Given the constraints of the project and the need for explainability, this trade
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+I used AI using the brainstorming process and for debugging. It helped me create the initial UML design and it helped me with the algorithmic logic. 
+
+The best prompts were the concise ones that involed a chat variable. For example, "#codebase What are the most important edge cases to test for a pet scheduler with sorting and recurring tasks?" 
+
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
 
----
+I initially rejected the UML design it gave me because it was overly complex and had too many classes. I tried fixing it but it got more complicated. Therefore, I need to work on writing more concise prompts. 
+I evaluated the UML diagram by looking at the Mermaid diagram and I noticed that it had too many classes. 
 
 ## 4. Testing and Verification
 
@@ -84,11 +88,17 @@ Given the constraints of the project and the need for explainability, this trade
 
 - What part of this project are you most satisfied with?
 
+I am satified with the scheduling logic: that it considers priority and duration when scheduling the tasks. 
+
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
 
-I would add a priority attribute to the tasks to help the scheduling become more efficient. Finally, I would add a method that explains the reasoning behind the schedule in a human-readable format, including any conflict warnings.
+I would make the design consider some sort of idle time between tasksto allow for more flexibility in the schedule.
+
+I would add other metrics to the tasks such as the energy levels of the pet and the user to make the scheduling more efficient. For example, if the pet is more active in the morning, the scheduler could prioritize scheduling tasks that require more energy in the morning. 
+
+I would also make room to schedule at different times of the day, or specify the location of the event rather than choosing a limited contiguous timeframe from.  
 
 **c. Key takeaway**
 
