@@ -64,6 +64,13 @@ Given the constraints of the project and the need for explainability, this trade
 - What behaviors did you test?
 - Why were these tests important?
 
+1- mark that a task is completed and check that the occurence is updated correctly. This is important because you do not want the user to have to manually add this task every time. 
+
+2- test the explain function to make sure it returns the correct output. This is important because the user needs to understand the reasoning behind the schedule.
+
+3- test the conflict detection to make sure it returns the correct warnings. This is important because the user needs to be aware of any conflicts in the schedule. It also ensures that the app doesn't crash when there are conflicts.
+
+
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
@@ -81,6 +88,10 @@ Given the constraints of the project and the need for explainability, this trade
 
 - If you had another iteration, what would you improve or redesign?
 
+I would add a priority attribute to the tasks to help the scheduling become more efficient. Finally, I would add a method that explains the reasoning behind the schedule in a human-readable format, including any conflict warnings.
+
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+
+I learnt that is important to evaluate the changes AI tools suggest before implementing them. Also, I go over the code after implementing the changes to make sure it is correct and efficient. In addition, I learnt how to use lambda functions to sort the tasks based on their scheduled time. 

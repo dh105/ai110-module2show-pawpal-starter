@@ -51,3 +51,14 @@ The scheduler now includes:
 - Recurring task automation: marking daily/weekly tasks complete creates the next occurrence.
 - Conflict detection (`Scheduler.detect_conflicts`) that returns warnings for overlapping tasks instead of crashing.
 - Human-readable explanation output via `Scheduler.explain` including conflict warnings.
+
+## Testing PawPal+
+To run tests, type the following command in the terminal:
+
+``` python -m pytest
+- Verify tasks are returned in chronological order.
+- Confirm that marking a daily task complete creates a new task for the following day.
+- Verify that the Scheduler flags duplicate times.
+
+
+COnfidence level = 5
