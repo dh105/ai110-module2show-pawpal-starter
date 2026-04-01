@@ -22,6 +22,7 @@ Class 4: Scheduler: has a method that takes the user and pet info and creates a 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
 
+It added a priority attribut to the tasks to help the scheduling become more efficient. 
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
