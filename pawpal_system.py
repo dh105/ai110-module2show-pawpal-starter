@@ -12,9 +12,27 @@ class Task:
     frequency: Optional[str] = None  # e.g., "daily", "weekly"
     is_completed: bool = False
 
-    def mark_completed(self):
-        """Mark this task as completed."""
+    def mark_completed(self, when: Optional[datetime] = None):
+        """Mark this task as completed and create next recurring instance if needed."""
         self.is_completed = True
+        if when is None:
+            when = datetime.now()
+
+        if self.frequency not in {"daily", "weekly"}:
+            return None
+
+        increment = timedelta(days=1) if self.frequency == "daily" else timedelta(weeks=1)
+        next_start = when + increment
+
+        # build next task id with ordinal date suffix to avoid collisions
+        next_task_id = f"{self.id}_next_{next_start.strftime('%Y%m%d')}-{next_start.strftime('%H%M%S')}"
+
+        return Task(
+            id=next_task_id,
+            description=self.description,
+            duration_minutes=self.duration_minutes,
+            frequency=self.frequency,
+        )
 
     def mark_pending(self):
         """Mark this task as not completed."""
@@ -46,6 +64,9 @@ class Pet:
     def get_tasks(self) -> List[Task]:
         """Return the task list for the pet."""
         return list(self.tasks)
+    def sort_by_time(self) -> List[Task]:
+        """Return tasks sorted by scheduled time."""
+        return sorted(self.tasks, key=lambda t: (t.scheduled_start or datetime.max))
 
 
 @dataclass
@@ -76,11 +97,37 @@ class Owner:
         """Return all uncompleted tasks across all pets."""
         return [task for task in self.get_all_tasks() if not task.is_completed]
 
+    def get_tasks_filtered(
+        self,
+        status: str = "all",
+        pet_name: Optional[str] = None,
+    ) -> List[Task]:
+        """Filter tasks by completion status and optional pet name."""
+        valid_status = {"all", "pending", "completed"}
+        if status not in valid_status:
+            raise ValueError(f"Invalid status '{status}', must be one of {valid_status}")
+
+        filtered = []
+        for pet in self.pets:
+            if pet_name and pet.name.lower() != pet_name.lower():
+                continue
+
+            for task in pet.tasks:
+                if status == "all":
+                    filtered.append(task)
+                elif status == "pending" and not task.is_completed:
+                    filtered.append(task)
+                elif status == "completed" and task.is_completed:
+                    filtered.append(task)
+
+        return filtered
+
 
 class Scheduler:
     def __init__(self):
         """Initialize the scheduler with an empty schedule."""
-        self.schedule = []  # List of (task, start, end)
+        self.schedule: List[Task] = []
+        self.conflict_warnings: List[str] = []
 
     def retrieve_tasks(self, owner: Owner) -> List[Task]:
         """Retrieve pending tasks from the owner."""
@@ -104,7 +151,42 @@ class Scheduler:
                 continue
 
         self.schedule = scheduled
+        self.conflict_warnings = self.detect_conflicts(scheduled)
         return scheduled
+
+    def detect_conflicts(self, tasks: List[Task]) -> List[str]:
+        """Return lightweight conflict warnings for overlapping scheduled tasks."""
+        warnings = []
+        sorted_tasks = sorted(tasks, key=lambda t: t.scheduled_start or datetime.max)
+
+        for i in range(len(sorted_tasks)):
+            a = sorted_tasks[i]
+            if not a.has_schedule():
+                continue
+            for b in sorted_tasks[i + 1 :]:
+                if not b.has_schedule():
+                    continue
+                # As tasks are ordered by start, any b that starts after a ends is no longer in conflict
+                if b.scheduled_start >= a.scheduled_end:
+                    break
+                if a.scheduled_start < b.scheduled_end and b.scheduled_start < a.scheduled_end:
+                    warnings.append(
+                        f"Conflict: '{a.description}' ({a.scheduled_start.strftime('%H:%M')}-{a.scheduled_end.strftime('%H:%M')}) "
+                        f"overlaps with '{b.description}' ({b.scheduled_start.strftime('%H:%M')}-{b.scheduled_end.strftime('%H:%M')})."
+                    )
+
+        return warnings
+
+    def complete_task(self, owner: Owner, task_id: str, when: Optional[datetime] = None) -> Optional[Task]:
+        """Mark a task completed and add next occurrence for daily/weekly tasks."""
+        for pet in owner.pets:
+            for task in pet.tasks:
+                if task.id == task_id:
+                    next_task = task.mark_completed(when=when)
+                    if next_task is not None:
+                        pet.add_task(next_task)
+                    return next_task
+        return None
 
     def get_today_schedule(self) -> List[Task]:
         """Return the current scheduled tasks for today."""
@@ -121,6 +203,11 @@ class Scheduler:
             f"{task.description} (Pet task) {task.scheduled_start.strftime('%H:%M')} - {task.scheduled_end.strftime('%H:%M')}"
             for task in scheduled_tasks
         ]
+
+        if self.conflict_warnings:
+            lines.append("\nWarnings:")
+            lines.extend([f"- {w}" for w in self.conflict_warnings])
+
         return "\n".join(lines)
 
 

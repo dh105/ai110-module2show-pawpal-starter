@@ -31,12 +31,16 @@ It added a priority attribut to the tasks to help the scheduling become more eff
 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
-
+One constraint is the remaining time capacity (the slot capacity). In additon, it encforces no-overlap detection in detect_conflicts method. 
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
+The scheduler favors a simple greedy approach that schedules tasks in order of priority and earliest free time. This may leave time unusable if a longer task blocks a better combination of shorter tasks.
 
+This is a tradeoff because it may not always produce the optimal schedule, but it is much simpler to implement and understand. 
+
+Given the constraints of the project and the need for explainability, this tradeoff is reasonable for this scenario.
 ---
 
 ## 3. AI Collaboration
