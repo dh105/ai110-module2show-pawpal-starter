@@ -7,6 +7,16 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+Class 1: Pet: has attributes: owner_ids, pet_id, age, owner, task. Methods: getters that resturn the needs and the time they should be completed
+another method that updates whether the task was met or not. 
+Class 2: User: has attributes: onwner_id, pet_ids, schedule methods: 1- should return the free times of the user and match that with the pet. 
+2- another method that creates a task for the pet based on the needs of the pet and the free time of the user.
+
+Class 3: Task: has a pet_id, owner_id, type, allocated time, completed or not completed. It has method that keeps track of whether that task was fulfilled or not
+
+Class 4: Scheduler: has a method that takes the user and pet info and creates a schedule based on the needs of the pet and the free time of the user.
+
+
 **b. Design changes**
 
 - Did your design change during implementation?
